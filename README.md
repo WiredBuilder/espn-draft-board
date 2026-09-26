@@ -1,4 +1,4 @@
-# espn-draft-board: ESPN fantasy hockey draft assistant for Claude Code
+# ESPN Fantasy Hockey Draft Assistant (free, open source)
 
 **espn-draft-board is a free, open-source ESPN fantasy hockey draft assistant.** It rescores ESPN's projections under your league's own scoring, models how each owner in your league drafts from their past drafts, and names your next pick during a live ESPN draft. It runs in a terminal or as a Claude Code skill, and it is read-only: it never touches your ESPN team.
 
