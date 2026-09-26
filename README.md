@@ -6,6 +6,19 @@ A read-only draft board for ESPN fantasy hockey. It pulls ESPN's projections and
 
 Built and used for real on 2026-09-25 in a 13-team, 20-round, no-bench league. Write-up: https://wiredbuilder.com/lab/draft-board
 
+## What nobody else does: it models the other owners
+
+Every other ESPN tool ranks players. This one also reads your league's past drafts (`scripts/league_history.py`) and builds a model of each owner: how often they autopick, when they take their first goalie and first defenceman, and which players they re-draft year after year. Between your picks the board walks every intervening pick with that owner's habits instead of assuming ADP, then prints what it expects to vanish and a positional run alarm:
+
+```
+Layer 2: 4 past drafts, 1040 picks, 18% autopick. Owners modelled: 17 (goalie timing, D timing, repeat picks).
+!!! G run: 3 G likely gone before pick 48, best G VOR drops 7
+>>> PICK: Jake Oettinger (G, DAL) | backup: Jake Guentzel (F, TB)
+    Expected before your next pick: Tkachuk (adp), Hughes (favorite), Oettinger (first G), Wedgewood (first G) ...
+```
+
+That output is a replay of pick 31 in a real draft. Five goalies went in the next twelve picks.
+
 ## How it works
 
 1. `scripts/refresh.py` pulls the public ESPN player pool (projections, ADP, ownership, injury status) and, with your login cookies, your league's settings, scoring, rosters and draft picks. Everything lands in a local SQLite file.
@@ -40,7 +53,7 @@ Where the cookies live: Chrome, logged in to ESPN, DevTools > Application > Cook
 
 - `scripts/board.py --pos D --top 20` static board by position
 - `scripts/news.py --player "Quinn Hughes"` news about one player
-- `scripts/league_history.py` then `scripts/history_report.py` pull your league's past drafts and report who takes goalies early, who autopicks, and what survives to your slot
+- `scripts/league_history.py` pulls your league's past drafts (needed for the owner models above); `scripts/history_report.py` writes a readable report of who takes goalies early, who autopicks, and what survives to your slot
 - `scripts/mock_sim.py` simulate a draft against ADP plus autopick behaviour
 
 ## What it does not do
@@ -48,6 +61,12 @@ Where the cookies live: Chrome, logged in to ESPN, DevTools > Application > Cook
 - It never drafts, queues, or clicks anything on ESPN.
 - It has no rookie projections. ESPN projects zero for most first-year players, so they do not appear on the board. Keep your own list. Adding an NHL API rookie feed is the next planned change.
 - ESPN's API is unofficial and has no published terms for automated use. This tool makes a handful of read requests per refresh.
+
+## Tests
+
+```bash
+.venv/bin/pip install -r requirements-dev.txt && .venv/bin/python -m pytest tests
+```
 
 ## Licence
 

@@ -65,12 +65,17 @@ def build(con, season=2027):
     return players, meta
 
 
-def vona(avail, picks_until_next, need, modes=None):
+def vona(avail, picks_until_next, need, modes=None, plan=None, already=None):
     """Value Over Next Available: how much you lose at this position if you wait.
-    Assumes other teams draft by ESPN ADP until your next pick (an assumption, shown as such).
-    modes: optional list, one entry per intervening pick, "adp" (human owner) or "rank" (owner who mostly
-    autopicks, so ESPN drafts for them in ESPN rank order). Built from this league's draft history."""
-    if modes:
+    plan: list of (pick_no, owner_model, mode) for each intervening pick; see owners.simulate. When given,
+    each owner is walked with their own habits (favourite players, first-goalie and first-D timing) and the
+    simulated picks are returned as the third value. Without it, others draft by ESPN ADP, or by ESPN rank
+    for owners flagged "rank" in modes (mostly autopick)."""
+    log = []
+    if plan:
+        from fhdb import owners
+        gone, log = owners.simulate(avail, plan, already)
+    elif modes:
         gone, left = set(), list(avail)
         for m in modes:
             key = (lambda x: x["espn_rank"] or 9999) if m == "rank" else (lambda x: x["adp"] or 999)
@@ -88,4 +93,4 @@ def vona(avail, picks_until_next, need, modes=None):
     for x in avail:
         x["vona"] = x["vor"] - nxt.get(x["slot"], 0)
         x["likely_gone"] = x["espn_id"] in gone
-    return sorted(avail, key=lambda x: x["vona"], reverse=True), nxt
+    return sorted(avail, key=lambda x: x["vona"], reverse=True), nxt, log

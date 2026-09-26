@@ -7,7 +7,7 @@
 import argparse, csv, os, sys, time
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from fhdb import db, espn, rank
+from fhdb import db, espn, rank, owners
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--live", action="store_true"); ap.add_argument("--top", type=int, default=25)
@@ -18,6 +18,8 @@ ap.add_argument("--skip-file", metavar="PATH", help="text file, one player name 
 a = ap.parse_args()
 espn.load_env()
 con = db.connect()
+MODELS = owners.models(con)
+LAYER2 = owners.summary(con, MODELS)
 
 
 def refresh(players=True):
@@ -72,10 +74,9 @@ def render():
     picks = [(r - 1) * T + (pos if r % 2 else T - pos + 1) for r in range(1, sum(m["slots"].values()) + 1)]
     nxt = [p for p in picks if p > made][:3]
     gap = (nxt[1] - nxt[0]) if len(nxt) > 1 else 0
-    # picks by others between now and your NEXT-after-this pick. Owners who mostly autopick (under 60% of their
-    # past picks clicked by hand) are modelled as drafting in ESPN rank order; everyone else by ADP.
-    human = {r[0]: r[1] for r in con.execute(
-        "SELECT owner_name, 100.0*SUM(auto_draft=0)/COUNT(*) FROM draft_history GROUP BY owner_name")}
+    # Picks by others between now and your NEXT-after-this pick, each walked with that owner's own habits
+    # (Layer 2: favourite players, first-goalie and first-D timing, autopick share). Owners with no history
+    # draft by ADP; owners who mostly autopick (under 60% human) draft in ESPN rank order.
     slot_owner = {r[0]: r[1] for r in con.execute("SELECT draft_position, owner_names FROM fantasy_teams WHERE run_id=?", (lg,))}
 
     def owner_slot(p):
@@ -84,9 +85,29 @@ def render():
 
     between = [p for p in range(made + 1, nxt[1])] if len(nxt) > 1 else []
     between = [p for p in between if p != nxt[0]]
-    modes = ["rank" if human.get(slot_owner.get(owner_slot(p)), 100) < 60 else "adp" for p in between]
-    avail, next_av = rank.vona(avail, len(between), need, modes if human else None)
-    n_rank = modes.count("rank")
+    plan = []
+    for p in between:
+        o = MODELS.get(slot_owner.get(owner_slot(p)))
+        mode = "rank" if o and o["human_pct"] < 60 else "adp"
+        plan.append((p, dict(o, name=slot_owner.get(owner_slot(p))) if o else None, mode))
+    # Slots each owner has already filled this draft, so the simulation does not hand them a second first-goalie.
+    slot_of_id = {x["espn_id"]: x["slot"] for x in P}
+    already = {}
+    for r in con.execute("SELECT t.owner_names, d.espn_id FROM draft_picks d JOIN fantasy_teams t ON t.run_id=d.run_id AND t.team_id=d.team_id WHERE d.run_id=? AND d.espn_id>0", (lg,)):
+        if r[1] in slot_of_id:
+            already.setdefault(r[0], set()).add(slot_of_id[r[1]])
+    n_rank = sum(1 for _, _, mm in plan if mm == "rank")
+    avail, next_av, sim = rank.vona(avail, len(between), need, plan=plan if MODELS else None,
+                                    modes=[mm for _, _, mm in plan] if not MODELS else None, already=already)
+    # Positional run alarm: how many of each slot the simulation expects to vanish before your next pick,
+    # and what that costs you in VOR at that slot.
+    alarms = []
+    for slot in ("G", "D", "F"):
+        n_sim = sum(1 for _, _, x, _ in sim if x["slot"] == slot)
+        best_now = max((x["vor"] for x in avail if x["slot"] == slot), default=0)
+        drop = best_now - next_av.get(slot, 0)
+        if slot != "F" and n_sim >= 2 and drop >= 5 and need.get(slot, 0) > 0:
+            alarms.append(f"{slot} run: {n_sim} {slot} likely gone before pick {nxt[1] if len(nxt) > 1 else '-'}, best {slot} VOR drops {drop:.0f}")
 
     on_clock = nxt and nxt[0] == made + 1
     print(f"{me['name']} | draft slot {pos} of {T} | your next picks: {nxt} | picks made so far: {made}/{total}"
@@ -101,13 +122,20 @@ def render():
     if a.taken_file:
         print(f"Taken file: {manual} names removed" + (f" | NOT MATCHED: {', '.join(unmatched)}" if unmatched else ""))
     print(f"Scoring: your league (see refresh.py output). Replacement level F {m['repl']['F']:.0f}, D {m['repl']['D']:.0f}, G {m['repl']['G']:.0f}")
-    print(f"Data pulled {m['players_pulled']} UTC. Projections: ESPN (single source).\n")
+    print(f"Data pulled {m['players_pulled']} UTC. Projections: ESPN (single source).")
+    print(LAYER2)
+    for al in alarms:
+        print(f"!!! {al}")
+    print()
     if not avail:
         print("Nothing left to draft for your open slots.")
         return made >= total
     rec, alt = avail[0], (avail[1] if len(avail) > 1 else avail[0])
     print(f">>> PICK: {rec['full_name']} ({rec['slot']}, {rec['team']}) | backup: {alt['full_name']} ({alt['slot']}, {alt['team']})")
-    print(f"    Waiting costs: F {next_av.get('F',0):.0f} / D {next_av.get('D',0):.0f} / G {next_av.get('G',0):.0f} VOR expected still there at pick {nxt[1] if len(nxt)>1 else '-'} ({len(between)} picks in between: {len(between)-n_rank} by ADP, {n_rank} autopick-style by ESPN rank)\n")
+    print(f"    Waiting costs: F {next_av.get('F',0):.0f} / D {next_av.get('D',0):.0f} / G {next_av.get('G',0):.0f} VOR expected still there at pick {nxt[1] if len(nxt)>1 else '-'} ({len(between)} picks in between: {len(plan)-n_rank-sum(1 for _,o,_ in plan if o is None)} modelled owners, {n_rank} autopick-style, {sum(1 for _,o,_ in plan if o is None)} unknown by ADP)")
+    if sim:
+        print("    Expected before your next pick: " + ", ".join(f"{x['full_name'].split()[-1]} ({why})" for _, _, x, why in sim[:8]) + (" ..." if len(sim) > 8 else ""))
+    print()
     print(f"{'#':>3} {'Player':24}{'Pos':4}{'Team':5}{'ADP':>6}{'Pts':>7}{'VOR':>6}{'VONA':>6}  Notes")
     for i, x in enumerate(avail[:a.top], 1):
         s = x["stats"]
