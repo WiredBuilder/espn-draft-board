@@ -6,8 +6,8 @@
     "name": "Blake Mitchell",
     "url": "https://wiredbuilder.com"
   },
-  "homepage": "https://wiredbuilder.com/lab/draft-board/",
-  "repository": "https://github.com/WiredBuilder/espn-fantasy-hockey-draft-board",
+  "homepage": "https://wiredbuilder.com/lab/espn-fantasy-hockey-draft-assistant-free-open-source/",
+  "repository": "https://github.com/WiredBuilder/espn-fantasy-hockey-draft-assistant",
   "license": "MIT",
   "keywords": ["espn", "fantasy-hockey", "nhl", "draft-assistant", "fantasy-sports", "claude-code-skills"]
 }
