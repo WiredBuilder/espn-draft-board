@@ -20,6 +20,11 @@ espn.load_env()
 con = db.connect()
 MODELS = owners.models(con)
 LAYER2 = owners.summary(con, MODELS)
+STAT_NAMES = {k: v[0] for k, v in db.STAT_IDS.items()}
+_P0, _M0 = rank.build(con)
+rank.check(_M0)
+RULES = rank.describe(_M0, STAT_NAMES)
+print("\n".join(RULES)); print(LAYER2); print()
 
 
 def refresh(players=True):
@@ -121,7 +126,8 @@ def render():
     print(f"Still needed: " + ", ".join(f"{k} {v}" for k, v in need.items()))
     if a.taken_file:
         print(f"Taken file: {manual} names removed" + (f" | NOT MATCHED: {', '.join(unmatched)}" if unmatched else ""))
-    print(f"Scoring: your league (see refresh.py output). Replacement level F {m['repl']['F']:.0f}, D {m['repl']['D']:.0f}, G {m['repl']['G']:.0f}")
+    for ln in rank.describe(m, STAT_NAMES):
+        print(ln)
     print(f"Data pulled {m['players_pulled']} UTC. Projections: ESPN (single source).")
     print(LAYER2)
     for al in alarms:

@@ -49,6 +49,19 @@ Then, after each pick, run `sync.js` in the draft room tab, paste its output ove
 
 Where the cookies live: Chrome, logged in to ESPN, DevTools > Application > Cookies > fantasy.espn.com, values `espn_s2` and `SWID`. They stay in `.env`, which is git-ignored.
 
+## It prints the rules it is using
+
+Every run starts with the league it thinks it is drafting for, so a wrong league id or a stale cookie shows up before the draft, not during it:
+
+```
+League: 13 teams | starters F12 D6 G2 | bench 3 | IR 0
+Scoring: W 2, SO 3, OTL 1, G 1, A 1, PPG 1, SHG 2, SHA 1, GWG 1, HAT 3
+Ignored (rate stats cannot be summed): GAA
+Replacement level (teams x depth F14 D7 G2): F 45, D 25, G 56
+```
+
+Bench seats are spread across F, D and G in proportion to starters and deepen the replacement level. C, LW, RW and UTIL slots all count as forwards. GAA and SV% are per-game rates, so they are skipped and named. If the league has no scoring or no roster slots loaded, the board refuses to run.
+
 ## Other commands
 
 - `scripts/board.py --pos D --top 20` static board by position

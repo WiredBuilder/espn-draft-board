@@ -66,3 +66,16 @@ def test_vona_returns_log_and_next_available(tmp_path):
 def test_summary_without_history(tmp_path):
     con = db.connect(tmp_path / "e.sqlite")
     assert "no draft history" in owners.summary(con, {})
+
+
+def test_roster_shape_and_bench_spread():
+    starters, bench, ir = rank.roster_shape({"C": 2, "LW": 2, "RW": 2, "UTIL": 1, "D": 4, "G": 2, "BE": 4, "IR": 1})
+    assert starters == {"F": 7, "D": 4, "G": 2} and bench == 4 and ir == 1
+    depth = rank.with_bench(starters, bench)
+    assert sum(depth.values()) == 17 and depth["F"] >= depth["D"] >= depth["G"] and depth["G"] >= 2
+
+
+def test_check_refuses_empty_league():
+    import pytest
+    with pytest.raises(SystemExit):
+        rank.check({"teams": 0, "scoring": {}, "starters": {"F": 0, "D": 0, "G": 0}})
