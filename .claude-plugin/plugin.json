@@ -9,5 +9,17 @@
   "homepage": "https://wiredbuilder.com/lab/espn-fantasy-hockey-draft-assistant-free-open-source/",
   "repository": "https://github.com/WiredBuilder/espn-fantasy-hockey-draft-assistant",
   "license": "MIT",
-  "keywords": ["espn", "fantasy-hockey", "nhl", "draft-assistant", "fantasy-sports", "claude-code-skills"]
+  "keywords": [
+    "espn",
+    "fantasy-hockey",
+    "nhl",
+    "draft-assistant",
+    "fantasy-sports",
+    "claude-code-skills"
+  ],
+  "icon": "./.claude-plugin/icon.svg",
+  "displayName": "ESPN Fantasy Hockey Draft Assistant",
+  "supportUrl": "https://github.com/WiredBuilder/espn-fantasy-hockey-draft-assistant/issues",
+  "documentationUrl": "https://github.com/WiredBuilder/espn-fantasy-hockey-draft-assistant#readme",
+  "privacyPolicyUrl": "https://agreements.wiredbuilder.com/privacy/"
 }
