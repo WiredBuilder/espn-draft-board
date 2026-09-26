@@ -1,10 +1,10 @@
-# espn-draft-board
+# espn-draft-board: ESPN fantasy hockey draft assistant for Claude Code
 
-**ESPN fantasy hockey draft assistant in Python.** Pulls the ESPN fantasy API, rescores every projection under your league's rules, and prints the next pick during your draft. Runs in a terminal; works as a Claude Code or ChatGPT helper by pasting the board.
+**espn-draft-board is a free, open-source ESPN fantasy hockey draft assistant.** It rescores ESPN's projections under your league's own scoring, models how each owner in your league drafts from their past drafts, and names your next pick during a live ESPN draft. It runs in a terminal or as a Claude Code skill, and it is read-only: it never touches your ESPN team.
 
 A read-only draft board for ESPN fantasy hockey. It pulls ESPN's projections and ADP, rescores every player under **your league's** scoring, ranks them by value over replacement for the roster slots you still need, and during the draft prints one line: the pick and a backup. Nothing here writes to ESPN. You click Draft.
 
-Built and used for real on 2026-09-25 in a 13-team, 20-round, no-bench league. Write-up: https://wiredbuilder.com/lab/draft-board
+Built and used for real on 2026-09-25 in a 13-team, 20-round, no-bench league. Write-up: [How I built an ESPN fantasy hockey draft board](https://wiredbuilder.com/lab/draft-board/)
 
 ## What nobody else does: it models the other owners
 
@@ -62,6 +62,17 @@ Replacement level (teams x depth F14 D7 G2): F 45, D 25, G 56
 
 Bench seats are spread across F, D and G in proportion to starters and deepen the replacement level. C, LW, RW and UTIL slots all count as forwards. GAA and SV% are per-game rates, so they are skipped and named. If the league has no scoring or no roster slots loaded, the board refuses to run.
 
+## Use it with Claude Code
+
+The repo is also a Claude Code plugin with one skill, `espn-draft-board`. In Claude Code:
+
+```
+/plugin marketplace add WiredBuilder/espn-draft-board
+/plugin install espn-draft-board@wiredbuilder
+```
+
+Then open Claude Code in your clone of this repo and say "set up my ESPN draft board" or, on draft night, paste the `sync.js` output and ask "who do I pick?". Claude updates `taken.txt`, runs the board, and answers with the `>>> PICK` line and any goalie or defence run alarm. You still enter your ESPN cookies yourself with `scripts/set_login.py`; the skill never asks for them in chat.
+
 ## Other commands
 
 - `scripts/board.py --pos D --top 20` static board by position
@@ -74,6 +85,40 @@ Bench seats are spread across F, D and G in proportion to starters and deepen th
 - It never drafts, queues, or clicks anything on ESPN.
 - It has no rookie projections. ESPN projects zero for most first-year players, so they do not appear on the board. Keep your own list. Adding an NHL API rookie feed is the next planned change.
 - ESPN's API is unofficial and has no published terms for automated use. This tool makes a handful of read requests per refresh.
+
+## How it compares
+
+| | espn-draft-board | [flaim](https://github.com/jdguggs10/flaim) | [PuckAPI skills](https://github.com/PuckAPI/claude-sports-analytics) | [espn-fantasy-claude-openclaw](https://github.com/garavitgabriel/espn-fantasy-claude-openclaw) |
+|---|---|---|---|---|
+| Sport | Hockey | Football, baseball, basketball, hockey | NHL analytics and betting | Baseball |
+| Fantasy platform | ESPN | ESPN, Yahoo, Sleeper | None | ESPN |
+| Focus | Draft day | League data over MCP | Research and models | Season management |
+| Models each owner from past drafts | Yes | No | No | No |
+| Runs locally, no hosted service | Yes | No (hosted app) | Uses PuckAPI server for live data | Yes |
+| Claude Code skill | Yes | Yes | Yes | Yes |
+
+## FAQ
+
+**What is the best free draft tool for ESPN fantasy hockey?**
+If your league uses custom points scoring, a board rescored for those points is more accurate than ranking by ESPN's default projections. espn-draft-board does that rescoring, adds a model of each owner's draft habits, and is free and MIT-licensed.
+
+**Does it work with private ESPN leagues?**
+Yes. Run `scripts/set_login.py` once to store your `espn_s2` and `SWID` cookies in the git-ignored `.env`. Public leagues need no login.
+
+**Does it draft for me?**
+No. It never drafts, queues, or clicks anything on ESPN. It tells you the pick; you click Draft.
+
+**Does it support categories (H2H categories or roto) leagues?**
+Not yet. The value model is points-based: projected stats times your league's point values.
+
+**Does it support auction drafts or keeper leagues?**
+It is built for snake drafts and has no bid values. Keeper picks that ESPN records in the draft are treated as taken.
+
+**Can I use it with ChatGPT or another AI?**
+Yes. The board is plain terminal text, so you can paste it into any chat. The Claude Code skill automates the loop of updating picks and re-running the board.
+
+**Does it work for ESPN fantasy football, basketball, or baseball?**
+No. It is hockey-only: positions (F, D, G), stat IDs and news feeds are NHL-specific.
 
 ## Tests
 
