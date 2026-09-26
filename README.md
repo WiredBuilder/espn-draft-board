@@ -131,3 +131,7 @@ No. It is hockey-only: positions (F, D, G), stat IDs and news feeds are NHL-spec
 ## Licence
 
 MIT.
+
+## Privacy
+
+Everything runs on your machine and nothing is sent to the author. Full details in [PRIVACY.md](PRIVACY.md).
