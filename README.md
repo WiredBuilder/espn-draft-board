@@ -31,7 +31,7 @@ That output is a replay of pick 31 in a real draft. Five goalies went in the nex
 
 ```bash
 git clone https://github.com/WiredBuilder/espn-fantasy-hockey-draft-assistant.git
-cd espn-fantasy-hockey-draft-board
+cd espn-fantasy-hockey-draft-assistant
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env            # set ESPN_LEAGUE_ID, ESPN_SEASON, MY_TEAM_ID
 .venv/bin/python scripts/set_login.py   # private league only: pastes espn_s2 and SWID cookies into .env, hidden
