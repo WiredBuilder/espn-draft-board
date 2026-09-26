@@ -17,7 +17,7 @@ Built and used for real on 2026-09-25 in a 13-team, 20-round, no-bench league. W
 ## Quickstart
 
 ```bash
-git clone https://github.com/bambam624/espn-draft-board.git
+git clone https://github.com/WiredBuilder/espn-draft-board.git
 cd espn-draft-board
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env            # set ESPN_LEAGUE_ID, ESPN_SEASON, MY_TEAM_ID
