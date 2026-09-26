@@ -67,6 +67,10 @@ def latest(con, source, endpoint):
 def build(con, season=2027):
     lg = latest(con, "espn_league", "league")
     pl = latest(con, "espn_league", "players")
+    if lg is None or pl is None:
+        raise SystemExit("League settings not loaded: no successful league pull in the database. For a private league run "
+                         "scripts/set_login.py, then scripts/refresh.py. For an ESPN-default-scoring preview without login, "
+                         "run scripts/board.py.")
     scoring = {r["stat_id"]: r["points"] for r in con.execute("SELECT * FROM league_scoring WHERE run_id=?", (lg["run_id"],))}
     raw_slots = {r["slot_name"]: r["count"] for r in con.execute(
         "SELECT * FROM league_roster_slots WHERE run_id=? AND count>0", (lg["run_id"],))}

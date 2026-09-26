@@ -66,3 +66,7 @@ for season in [int(x) for x in a.seasons.split(",")]:
     db.finish_run(con, run, True, 200, n)
     missing = sum(1 for pk in picks if (pk.get("playerId") or 0) > 0 and pk["playerId"] not in pinfo)
     print(f"{season}: {n} picks stored, {len(teams)} teams, player info missing for {missing}")
+
+total = con.execute("SELECT COUNT(*), COUNT(DISTINCT season_id) FROM draft_history").fetchone()
+print(f"Draft history now holds {total[0]} picks from {total[1]} seasons." if total[0]
+      else "Draft history is empty: every season failed. If the league is private, set the cookies with scripts/set_login.py first.")

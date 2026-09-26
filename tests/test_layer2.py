@@ -79,3 +79,15 @@ def test_check_refuses_empty_league():
     import pytest
     with pytest.raises(SystemExit):
         rank.check({"teams": 0, "scoring": {}, "starters": {"F": 0, "D": 0, "G": 0}})
+
+
+def test_build_refuses_without_league_pull(tmp_path):
+    import pytest
+    con = db.connect(tmp_path / "n.sqlite")
+    with pytest.raises(SystemExit, match="League settings not loaded"):
+        rank.build(con)
+
+
+def test_skill_md_copies_match():
+    root = Path(__file__).resolve().parent.parent
+    assert (root / "SKILL.md").read_text() == (root / "skills/espn-draft-board/SKILL.md").read_text()

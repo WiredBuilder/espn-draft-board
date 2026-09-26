@@ -71,6 +71,8 @@ The repo is also a Claude Code plugin with one skill, `espn-draft-board`. In Cla
 /plugin install espn-draft-board@wiredbuilder
 ```
 
+No plugin marketplace? Clone it straight into your skills folder instead: `git clone https://github.com/WiredBuilder/espn-draft-board.git ~/.claude/skills/espn-draft-board` (or a project's `.claude/skills/`). On Claude.ai (Pro, Max, Team, Enterprise with code execution) zip the repo folder and upload it under Settings > Features > Skills; on the API use the `/v1/skills` endpoints.
+
 Then open Claude Code in your clone of this repo and say "set up my ESPN draft board" or, on draft night, paste the `sync.js` output and ask "who do I pick?". Claude updates `taken.txt`, runs the board, and answers with the `>>> PICK` line and any goalie or defence run alarm. You still enter your ESPN cookies yourself with `scripts/set_login.py`; the skill never asks for them in chat.
 
 ## Other commands
