@@ -1,4 +1,4 @@
-# bambam-draft-board
+# espn-draft-board
 
 A read-only draft board for ESPN fantasy hockey. It pulls ESPN's projections and ADP, rescores every player under **your league's** scoring, ranks them by value over replacement for the roster slots you still need, and during the draft prints one line: the pick and a backup. Nothing here writes to ESPN. You click Draft.
 
@@ -15,8 +15,8 @@ Built and used for real on 2026-09-25 in a 13-team, 20-round, no-bench league. W
 ## Quickstart
 
 ```bash
-git clone https://github.com/bambam624/bambam-draft-board.git
-cd bambam-draft-board
+git clone https://github.com/bambam624/espn-draft-board.git
+cd espn-draft-board
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env            # set ESPN_LEAGUE_ID, ESPN_SEASON, MY_TEAM_ID
 .venv/bin/python scripts/set_login.py   # private league only: pastes espn_s2 and SWID cookies into .env, hidden
