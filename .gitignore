@@ -7,3 +7,4 @@ taken.txt
 *.csv
 docs/
 skip.txt
+.claude/
