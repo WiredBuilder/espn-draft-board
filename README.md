@@ -30,8 +30,8 @@ That output is a replay of pick 31 in a real draft. Five goalies went in the nex
 ## Quickstart
 
 ```bash
-git clone https://github.com/WiredBuilder/espn-draft-board.git
-cd espn-draft-board
+git clone https://github.com/WiredBuilder/espn-fantasy-hockey-draft-board.git
+cd espn-fantasy-hockey-draft-board
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 cp .env.example .env            # set ESPN_LEAGUE_ID, ESPN_SEASON, MY_TEAM_ID
 .venv/bin/python scripts/set_login.py   # private league only: pastes espn_s2 and SWID cookies into .env, hidden
@@ -67,11 +67,11 @@ Bench seats are spread across F, D and G in proportion to starters and deepen th
 The repo is also a Claude Code plugin with one skill, `espn-draft-board`. In Claude Code:
 
 ```
-/plugin marketplace add WiredBuilder/espn-draft-board
+/plugin marketplace add WiredBuilder/espn-fantasy-hockey-draft-board
 /plugin install espn-draft-board@wiredbuilder
 ```
 
-No plugin marketplace? Clone it straight into your skills folder instead: `git clone https://github.com/WiredBuilder/espn-draft-board.git ~/.claude/skills/espn-draft-board` (or a project's `.claude/skills/`). On Claude.ai (Pro, Max, Team, Enterprise with code execution) zip the repo folder and upload it under Settings > Features > Skills; on the API use the `/v1/skills` endpoints.
+No plugin marketplace? Clone it straight into your skills folder instead: `git clone https://github.com/WiredBuilder/espn-fantasy-hockey-draft-board.git ~/.claude/skills/espn-draft-board` (or a project's `.claude/skills/`). On Claude.ai (Pro, Max, Team, Enterprise with code execution) zip the repo folder and upload it under Settings > Features > Skills; on the API use the `/v1/skills` endpoints.
 
 Then open Claude Code in your clone of this repo and say "set up my ESPN draft board" or, on draft night, paste the `sync.js` output and ask "who do I pick?". Claude updates `taken.txt`, runs the board, and answers with the `>>> PICK` line and any goalie or defence run alarm. You still enter your ESPN cookies yourself with `scripts/set_login.py`; the skill never asks for them in chat.
 

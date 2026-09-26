@@ -7,7 +7,7 @@
     "url": "https://wiredbuilder.com"
   },
   "homepage": "https://wiredbuilder.com/lab/draft-board/",
-  "repository": "https://github.com/WiredBuilder/espn-draft-board",
+  "repository": "https://github.com/WiredBuilder/espn-fantasy-hockey-draft-board",
   "license": "MIT",
   "keywords": ["espn", "fantasy-hockey", "nhl", "draft-assistant", "fantasy-sports", "claude-code-skills"]
 }
