@@ -1,0 +1,16 @@
+{
+  "name": "wiredbuilder",
+  "owner": {
+    "name": "Blake Mitchell"
+  },
+  "metadata": {
+    "description": "Fantasy hockey tools from WiredBuilder."
+  },
+  "plugins": [
+    {
+      "name": "espn-draft-board",
+      "source": "./",
+      "description": "ESPN fantasy hockey draft assistant: league-specific rankings, owner models from past drafts, and a live next-pick call during the draft."
+    }
+  ]
+}

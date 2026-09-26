@@ -1,0 +1,13 @@
+{
+  "name": "espn-draft-board",
+  "version": "0.1.0",
+  "description": "ESPN fantasy hockey draft assistant for Claude Code. Rescores ESPN projections for your league's scoring, models each owner from past drafts, and names your next pick. Read-only.",
+  "author": {
+    "name": "Blake Mitchell",
+    "url": "https://wiredbuilder.com"
+  },
+  "homepage": "https://wiredbuilder.com/lab/draft-board/",
+  "repository": "https://github.com/WiredBuilder/espn-draft-board",
+  "license": "MIT",
+  "keywords": ["espn", "fantasy-hockey", "nhl", "draft-assistant", "fantasy-sports", "claude-code-skills"]
+}
