@@ -100,7 +100,7 @@ def render():
     print(f"Still needed: " + ", ".join(f"{k} {v}" for k, v in need.items()))
     if a.taken_file:
         print(f"Taken file: {manual} names removed" + (f" | NOT MATCHED: {', '.join(unmatched)}" if unmatched else ""))
-    print(f"Scoring: G1 A1 +PPG1 +SHG2 +SHA1 +GWG1 +HAT3 | W2 SO3 OTL1. Replacement level F {m['repl']['F']:.0f}, D {m['repl']['D']:.0f}, G {m['repl']['G']:.0f}")
+    print(f"Scoring: your league (see refresh.py output). Replacement level F {m['repl']['F']:.0f}, D {m['repl']['D']:.0f}, G {m['repl']['G']:.0f}")
     print(f"Data pulled {m['players_pulled']} UTC. Projections: ESPN (single source).\n")
     if not avail:
         print("Nothing left to draft for your open slots.")

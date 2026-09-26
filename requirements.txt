@@ -1,4 +1,4 @@
 espn-api==0.46.0
 feedparser==6.0.12
 python-dotenv==1.0.1
-requests==2.32.3
+requests==2.32.4

@@ -1,5 +1,7 @@
 # espn-draft-board
 
+**ESPN fantasy hockey draft assistant in Python.** Pulls the ESPN fantasy API, rescores every projection under your league's rules, and prints the next pick during your draft. Runs in a terminal; works as a Claude Code or ChatGPT helper by pasting the board.
+
 A read-only draft board for ESPN fantasy hockey. It pulls ESPN's projections and ADP, rescores every player under **your league's** scoring, ranks them by value over replacement for the roster slots you still need, and during the draft prints one line: the pick and a backup. Nothing here writes to ESPN. You click Draft.
 
 Built and used for real on 2026-09-25 in a 13-team, 20-round, no-bench league. Write-up: https://wiredbuilder.com/lab/draft-board

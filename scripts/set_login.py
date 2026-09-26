@@ -14,6 +14,7 @@ for k, v in vals.items():
     if not v:
         raise SystemExit(f"{k} was empty, nothing saved.")
     lines = [l for l in lines if not l.startswith(k + "=")] + [f"{k}={v}"]
-env.write_text("\n".join(lines) + "\n")
+env.touch(mode=0o600, exist_ok=True)
 env.chmod(0o600)
+env.write_text("\n".join(lines) + "\n")
 print(f"Saved. espn_s2 length {len(vals['ESPN_S2'])}, SWID looks {'OK' if vals['ESPN_SWID'].startswith('{') and vals['ESPN_SWID'].endswith('}') else 'WRONG (should be wrapped in { })'}.")
