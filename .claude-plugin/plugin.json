@@ -17,5 +17,6 @@
     "fantasy-sports",
     "claude-code-skills"
   ],
-  "icon": "./.claude-plugin/icon.svg"
+  "icon": "./.claude-plugin/icon.svg",
+  "displayName": "ESPN Fantasy Hockey Draft Assistant"
 }
